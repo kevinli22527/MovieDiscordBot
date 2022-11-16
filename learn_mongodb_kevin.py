@@ -25,4 +25,3 @@ mylist = [
 ]
 
 x = mycol.insert_many(mylist)
-mycol.drop()
