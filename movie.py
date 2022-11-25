@@ -9,7 +9,12 @@ movie = Movie()
 # gets recommendations based on previously watched movie
 def get_recommendations(movie_title):
     #get id of movie
-    movie_id = movie.search(movie_title)[0].id
+    search_results = movie.search(movie_title)
+    if (len(search_results) == 0):
+        # raise exception
+        raise Exception("Movie not found")
+    else:
+        movie_id = search_results[0].id
     #get recommendations
     recommendations = movie.recommendations(movie_id)
     for recommendation in recommendations:
@@ -18,4 +23,4 @@ def get_recommendations(movie_title):
         print(recommendation.overview)
         print()
 
-get_recommendations('Ella Enchanted')
+get_recommendations('asdgdajsfadsfjkda')
