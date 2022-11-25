@@ -2,12 +2,20 @@ from tmdbv3api import TMDb
 from tmdbv3api import Movie
 
 tmdb = TMDb()
-tmdb.api_key = '9c95f32d2ac2cd3f90e343920c70d576'
+tmdb.api_key = 'e373164d3c69c376e9af3610128d4b1a'
 
 movie = Movie()
 
-recommendations = movie.recommendations(movie_id=111)
+# gets recommendations based on previously watched movie
+def get_recommendations(movie_title):
+    #get id of movie
+    movie_id = movie.search(movie_title)[0].id
+    #get recommendations
+    recommendations = movie.recommendations(movie_id)
+    for recommendation in recommendations:
+        print(recommendation.title)
+        print(recommendation.id)
+        print(recommendation.overview)
+        print()
 
-for recommendation in recommendations:
-    print(recommendation.title)
-    print(recommendation.overview)
+get_recommendations('Ella Enchanted')
