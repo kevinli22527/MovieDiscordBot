@@ -43,8 +43,10 @@ async def roll(ctx):  # ctx is the context of the command
     res = str(random.choice(range(1, 7)))
     await ctx.send(res)
 
+
+# command to add a movie to a user's watch list, stored in MongoDB
 @bot.command(name='addMovie', help='Adds a movie to your watch list')
-async def roll(ctx, movie_name):  # ctx is the context of the command
+async def addMovie(ctx, movie_name):  # ctx is the context of the command
     # you might be making a call to TMDB API to check if movie exists
     # if it does, you might be making a call to the MONGODB API to add the movie name to the database
 
@@ -67,5 +69,49 @@ async def roll(ctx, movie_name):  # ctx is the context of the command
     # NOTE: you can use the ctx.author.web_status to get the user's web status
     
     pass
+
+
+# command to remove a movie from a user's watch list, stored in MongoDB
+@bot.command(name='rm', help='Removes a movie from your watch list')
+async def removeMovie(ctx):
+    pass
+
+
+# command to rate a movie after watching it, thus removing it from the user's watch list. The movie will be placed in the combined watched list
+@bot.command(name='rate', help='Rates a movie after watching it')
+async def rateMovie(ctx):
+    pass
+
+
+# command to display whose turn it is to pick a movie
+@bot.command(name='whoseTurn', help='Displays whose turn it is to pick a movie')
+async def whoseTurn(ctx):
+    pass
+
+
+# command to get a random movie from the watchlist of the person whose turn it is to pick a movie
+@bot.command(name='pick', help='Picks a random movie from the watchlist of the person whose turn it is to pick a movie')
+async def pickMovie(ctx):
+    pass
+
+
+# command to display a user's watch list
+@bot.command(name='list', help='Displays your watch list')
+async def list(ctx):
+    pass
+
+
+# command to yield a user's turn to pick a movie
+@bot.command(name='yield', help='Yields your turn to pick a movie')
+async def yieldTurn(ctx):
+    pass
+
+
+# command to display a user's movie stats, such as their watch list and the number of turns they have yielded
+@bot.command(name='stats', help='Displays the stats of a user')
+async def stats(ctx):
+    pass
+
+
 
 bot.run(TOKEN)
