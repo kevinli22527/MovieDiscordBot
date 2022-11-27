@@ -21,6 +21,10 @@ def get_recommendations(movie_title):
         print(recommendation.title)
         print(recommendation.id)
         print(recommendation.overview)
+        print(recommendation.genres)
         print()
 
-get_recommendations('asdgdajsfadsfjkda')
+try:
+    get_recommendations('The Lion King')
+except Exception as e:
+    print("exception occurred")
