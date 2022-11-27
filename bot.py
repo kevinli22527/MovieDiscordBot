@@ -1,11 +1,14 @@
 # bot.py
 import os
+from dotenv import load_dotenv  # responsible for loading the .env file
 
 import discord
 from discord.ext import commands, tasks
 import random
 
-TOKEN = 'MTA0NTc3NjExNjQxNTIxMzU3OA.GkKe_p.0sxWFOg5kFVWGfmiYdd5dz4rjWGUFjigR8IsL8'  # Kevin's developer token gotten from the setup of the bot in the developer portal
+load_dotenv()  # loads the .env file
+
+TOKEN = os.getenv('DISCORD_TOKEN')  # Kevin's developer token gotten from the setup of the bot in the developer portal
 
 import discord
 
