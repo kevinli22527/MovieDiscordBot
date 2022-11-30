@@ -23,6 +23,7 @@ def get_recommendations(movie_title):
         print(recommendation.overview)
         print(recommendation.genres)
         print()
+        
 
 try:
     get_recommendations('The Lion King')

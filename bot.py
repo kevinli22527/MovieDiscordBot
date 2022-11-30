@@ -7,6 +7,7 @@ from discord.ext import commands, tasks
 import random
 
 import pymongo
+from mongo_utility import *
 
 mongoclient = pymongo.MongoClient("mongodb+srv://KevinLi:Kevinpower1@ourcluster.eemanbw.mongodb.net/?retryWrites=true&w=majority")  # connects to the mongoDB database
 
@@ -32,8 +33,33 @@ async def on_message(message):
     if message.author == bot.user:
         return
 
+    display_name = message.author.display_name
+    name = message.author.name
+    mention = message.author.mention
+    guild = message.guild
+    status = message.author.status
+    top_role = message.author.top_role
+    voice_channel = message.author.voice.channel
+
+    # get the user's discord id
+    # user_id = message.author.id
+    # await message.channel.send(f'User ID: {user_id}')
+    # await message.channel.send(f'Display Name: {display_name}')
+    # await message.channel.send(f'Name: {name}')
+    # await message.channel.send(f'Mention: {mention}')
+    # await message.channel.send(f'Guild: {guild}')
+    # await message.channel.send(f'Status: {status}')
+    # await message.channel.send(f'Roles: {top_role}')
+    # await message.channel.send(f'Voice Channel: {voice_channel}')
+
+    # ping a user id
+    # await message.channel.send(f'<@{user_id}>')
+
     if message.content.startswith('$hello'):
         await message.channel.send('Hello!')
+
+    if message.content.startswith('print'):
+        await message.channel.send(str(get_all_users()))
 
     await bot.process_commands(message)
 
@@ -111,7 +137,6 @@ async def yieldTurn(ctx):
 @bot.command(name='stats', help='Displays the stats of a user')
 async def stats(ctx):
     pass
-
 
 
 bot.run(TOKEN)
