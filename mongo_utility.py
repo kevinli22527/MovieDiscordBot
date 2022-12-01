@@ -60,18 +60,18 @@ def addWatchedMovie(movie_name):
     watched_movies.replace_one({}, watched_movies_document)
     return
 
-#code needs to be tested when at home
-def addToWatchList(discord_name, movie_name): #adds a movie to a user's watch list
+
+def addToWatchList(discord_id, movie_name): #adds a movie to a user's watch list
     client = getMongoClient()
     db = client["MovieBot"]
     users = db["Users"]
 
     # get the document for the user as a Python dictionary
-    user_document = users.find_one({"discord_name": discord_name})
+    user_document = users.find_one({"discord_id": discord_id})
     user_document["watch_list"].append(movie_name)
 
     # this new document will replace the old document
-    users.replace_one({"discord_name": discord_name}, user_document)
+    users.replace_one({"discord_id": discord_id}, user_document)
     return
 
 
@@ -81,9 +81,9 @@ def addToWatchList(discord_name, movie_name): #adds a movie to a user's watch li
 # doc = {"watched_list": [{"nameOfMovie": "How to Train Your Dragon", "userRatings": [{"user": 279423302408339456, "rating": 9}]}]}
 # users.insert_one(doc)
 
-addWatchedMovie("How to Train Your Dragon 2")
+#addWatchedMovie("How to Train Your Dragon 2")
 
-
+addToWatchList("656333371827421225", "Ella Enchanted")
 #newvalues = {"$set": mydict}
 
 #x = mycol.update_one(selection, newvalues)
