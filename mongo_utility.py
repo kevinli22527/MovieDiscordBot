@@ -60,6 +60,20 @@ def addWatchedMovie(movie_name):
     watched_movies.replace_one({}, watched_movies_document)
     return
 
+#code needs to be tested when at home
+def addToWatchList(discord_name, movie_name): #adds a movie to a user's watch list
+    client = getMongoClient()
+    db = client["MovieBot"]
+    users = db["Users"]
+
+    # get the document for the user as a Python dictionary
+    user_document = users.find_one({"discord_name": discord_name})
+    user_document["watch_list"].append(movie_name)
+
+    # this new document will replace the old document
+    users.replace_one({"discord_name": discord_name}, user_document)
+    return
+
 
 # client = getMongoClient()
 # db = client["MovieBot"]
