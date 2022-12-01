@@ -45,11 +45,29 @@ def get_all_users():
     return user_info
 
 
-client = getMongoClient()
-db = client["MovieBot"]
-users = db["Logistics"]
-doc = {"whose_turn": 0}
-users.insert_one(doc)
+# adds a movie to the collective watch list. Ratings will be empty initially
+def addWatchedMovie(movie_name):
+    client = getMongoClient()
+    db = client["MovieBot"]
+    watched_movies = db["WatchedMovies"]
+
+    # get the document for the watched movies as a Python dictionary
+    watched_movies_document = watched_movies.find_one({})
+    movie_info = {"nameOfMovie": movie_name, "userRatings": []}
+    watched_movies_document["watched_list"].append(movie_info)
+
+    # this new document will replace the old document
+    watched_movies.replace_one({}, watched_movies_document)
+    return
+
+
+# client = getMongoClient()
+# db = client["MovieBot"]
+# users = db["WatchedMovies"]
+# doc = {"watched_list": [{"nameOfMovie": "How to Train Your Dragon", "userRatings": [{"user": 279423302408339456, "rating": 9}]}]}
+# users.insert_one(doc)
+
+addWatchedMovie("How to Train Your Dragon 2")
 
 
 #newvalues = {"$set": mydict}
