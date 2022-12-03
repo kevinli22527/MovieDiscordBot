@@ -9,6 +9,7 @@ import random
 
 import pymongo
 from mongo_utility import *
+from movie import *
 
 mongoclient = pymongo.MongoClient("mongodb+srv://KevinLi:Kevinpower1@ourcluster.eemanbw.mongodb.net/?retryWrites=true&w=majority")  # connects to the mongoDB database
 
@@ -85,13 +86,18 @@ async def addMovie(ctx):  # ctx is the context of the command
     
     # get the first group of the match
     if match is None:
-        await ctx.send('Invalid movie to be added')
+        await ctx.send('Invalid command format. Should be "*addMovie <movieTitle>"')
         return
     else:
         # send the movie name to the discord channel
         movie_name = match.group(1) # the first group of the match is the movie title
 
-        #check if movie exists in the database
+        # check if the movie exists in the TMDB database
+        if not movieExists(movie_name):
+            await ctx.send(f'"{movie_name}" is not a valid movie title')
+            return
+
+        #check if movie exists in the user's watch list
         if isInUserWatchList(user_id, movie_name):
             await ctx.send(f'{movie_name} is already in your watch list') # error message for the user
             return
