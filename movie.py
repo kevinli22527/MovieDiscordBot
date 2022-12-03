@@ -23,10 +23,6 @@ def get_recommendations(movie_title):
         print(recommendation.overview)
         print(recommendation.genres)
         print()
-try:
-    get_recommendations('The Lion King')
-except Exception as e:
-    print("exception occurred")
 
 
 # this method determines whether a movie actually exists in the TMDB database or not
