@@ -109,8 +109,8 @@ async def removeMovie(ctx):
     user_discord_name = ctx.author.display_name  # get the user's discord name
 
     full_command = ctx.message.content  # the raw text that triggered this command
-    ADD_MOVIE = re.compile(r'^\*removeMovie (.*)$', re.IGNORECASE)  # regex to get the movie name
-    match = re.match(ADD_MOVIE, full_command)  # match the regex to the full command
+    REMOVE_MOVIE = re.compile(r'^\*removeMovie (.*)$', re.IGNORECASE)  # regex to get the movie name
+    match = re.match(REMOVE_MOVIE, full_command)  # match the regex to the full command
     
     # get the first group of the match
     if match is None:
@@ -150,7 +150,27 @@ async def pickMovie(ctx):
 # command to display a user's watch list
 @bot.command(name='list', help='Displays your watch list')
 async def list(ctx):
-    pass
+    user_id = str(ctx.author.id)  # get the user's discord id
+
+    user_discord_name = ctx.author.display_name  # get the user's discord name
+
+    full_command = ctx.message.content  # the raw text that triggered this command
+    watch_list = getUserWatchList(user_id)  # get the user's watch list from the database
+
+    # send the user's watch list to the discord channel
+    
+    response = f"{user_discord_name}'s watch list:\n"
+    num = 1
+    for movie_name in watch_list:
+        response += str(num) + ") " + movie_name + "\n"
+        num += 1
+
+    if response != f"{user_discord_name}'s watch list:\n":
+        await ctx.send(response)  # send the watch list to the discord channel
+    else:
+        # if the user's watch list is empty, send a message to the discord channel
+        await ctx.send(f'{user_discord_name}\'s watch list is empty') # error message for the user
+
 
 
 # command to yield a user's turn to pick a movie
