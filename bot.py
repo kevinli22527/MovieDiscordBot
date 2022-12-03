@@ -1,5 +1,6 @@
 # bot.py
 import os
+import re
 from dotenv import load_dotenv  # responsible for loading the .env file
 
 import discord
@@ -33,13 +34,13 @@ async def on_message(message):
     if message.author == bot.user:
         return
 
-    display_name = message.author.display_name
-    name = message.author.name
-    mention = message.author.mention
-    guild = message.guild
-    status = message.author.status
-    top_role = message.author.top_role
-    voice_channel = message.author.voice.channel
+    # display_name = message.author.display_name
+    # name = message.author.name
+    # mention = message.author.mention
+    # guild = message.guild
+    # status = message.author.status
+    # top_role = message.author.top_role
+    # voice_channel = message.author.voice.channel
 
     # get the user's discord id
     # user_id = message.author.id
@@ -58,9 +59,6 @@ async def on_message(message):
     if message.content.startswith('$hello'):
         await message.channel.send('Hello!')
 
-    if message.content.startswith('print'):
-        await message.channel.send(str(get_all_users()))
-
     await bot.process_commands(message)
 
 # test command to respond to asterisk commands
@@ -71,30 +69,36 @@ async def roll(ctx):  # ctx is the context of the command
 
 
 # command to add a movie to a user's watch list, stored in MongoDB
+# *addMovie <movieTitle>
 @bot.command(name='addMovie', help='Adds a movie to your watch list')
-async def addMovie(ctx, movie_name):  # ctx is the context of the command
+async def addMovie(ctx):  # ctx is the context of the command
     # you might be making a call to TMDB API to check if movie exists
     # if it does, you might be making a call to the MONGODB API to add the movie name to the database
 
-    # MAKE SURE THAT EVERYTHING THAT HAPPENS AFTER *addMovie IS CONSIDERED PART OF THE MOVIE NAME
+    user_id = str(ctx.author.id)  # get the user's discord id
 
-    # NOTE: you can use the ctx.author.id to get the user's ID
-    # NOTE: you can use the ctx.author.name to get the user's name
-    # NOTE: you can use the ctx.author.mention to get the user's mention
-    # NOTE: you can use the ctx.author.display_name to get the user's display name
-    # NOTE: you can use the ctx.author.avatar_url to get the user's avatar url
-    # NOTE: you can use the ctx.author.created_at to get the user's creation date
-    # NOTE: you can use the ctx.author.discriminator to get the user's discriminator
-    # NOTE: you can use the ctx.author.guild to get the user's guild
-    # NOTE: you can use the ctx.author.joined_at to get the user's joined date
-    # NOTE: you can use the ctx.author.raw_status to get the user's raw status
-    # NOTE: you can use the ctx.author.status to get the user's status
-    # NOTE: you can use the ctx.author.top_role to get the user's top role
-    # NOTE: you can use the ctx.author.voice to get the user's voice
-    # NOTE: you can use the ctx.author.voice_channel to get the user's voice channel
-    # NOTE: you can use the ctx.author.web_status to get the user's web status
+    user_discord_name = ctx.author.display_name  # get the user's discord name
+
+    full_command = ctx.message.content  # the raw text that triggered this command
+    ADD_MOVIE = re.compile(r'^\*addMovie (.*)$', re.IGNORECASE)  # regex to get the movie name
+    match = re.match(ADD_MOVIE, full_command)  # match the regex to the full command
     
-    pass
+    # get the first group of the match
+    if match is None:
+        await ctx.send('Invalid movie to be added')
+        return
+    else:
+        # send the movie name to the discord channel
+        movie_name = match.group(1) # the first group of the match is the movie title
+
+        #check if movie exists in the database
+        if isInUserWatchList(user_id, movie_name):
+            await ctx.send(f'{movie_name} is already in your watch list') # error message for the user
+            return
+        else:
+            addToWatchList(user_id, movie_name)  # add the movie to the user's watch list
+            success_string = f'Successfully added {movie_name} to {user_discord_name}\'s watch list'
+            await ctx.send(success_string)  # send the success message to the discord channel
 
 
 # command to remove a movie from a user's watch list, stored in MongoDB

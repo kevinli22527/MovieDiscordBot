@@ -5,6 +5,7 @@ def getMongoClient():
 
 
 # this method drops all collections within a specified database
+# NUCLEAR: DO NOT USE UNLESS YOU KNOW WHAT YOU ARE DOING
 def drop_all_collections(target_database):
     client = getMongoClient()
     db = client[target_database]
@@ -18,9 +19,9 @@ def initialize_users():
     db = client["MovieBot"]
     users = db["Users"]
 
-    megan_info = {"discord_name": "Megan", "discord_id": "656333371827421225", "display_name": "Megan", "watch_list": ["The Matrix", "The Matrix Reloaded", "The Matrix Revolutions"], "turns_yielded": 0}
+    megan_info = {"discord_name": "Megan", "discord_id": "656333371827421225", "display_name": "Megan", "watch_list": [], "turns_yielded": 0}
 
-    kevin_info = {"discord_name": "Kevin", "discord_id": "279423302408339456", "display_name": "Kevin", "watch_list": ["The Matrix", "The Matrix Reloaded", "The Matrix Revolutions"], "turns_yielded": 0}
+    kevin_info = {"discord_name": "Kevin", "discord_id": "279423302408339456", "display_name": "Kevin", "watch_list": [], "turns_yielded": 0}
 
     users.insert_many([megan_info, kevin_info])
     return
@@ -61,7 +62,8 @@ def addWatchedMovie(movie_name):
     return
 
 
-def addToWatchList(discord_id, movie_name): #adds a movie to a user's watch list
+# adds the movie name to a user's watch list; user identified by the user id
+def addToWatchList(discord_id, movie_name): 
     client = getMongoClient()
     db = client["MovieBot"]
     users = db["Users"]
@@ -75,16 +77,25 @@ def addToWatchList(discord_id, movie_name): #adds a movie to a user's watch list
     return
 
 
-# client = getMongoClient()
-# db = client["MovieBot"]
-# users = db["WatchedMovies"]
-# doc = {"watched_list": [{"nameOfMovie": "How to Train Your Dragon", "userRatings": [{"user": 279423302408339456, "rating": 9}]}]}
-# users.insert_one(doc)
+# this method returns whether a movie name is inside a user's watch list; user is identified by the user id
+def isInUserWatchList(discord_id, movie_name):
+    client = getMongoClient()
+    db = client["MovieBot"]
+    users = db["Users"]
 
-#addWatchedMovie("How to Train Your Dragon 2")
+    # get the document for the user as a Python dictionary
+    user_document = users.find_one({"discord_id": discord_id})
+    watch_list = user_document["watch_list"]
+    return movie_name in watch_list
 
-addToWatchList("656333371827421225", "Ella Enchanted")
-#newvalues = {"$set": mydict}
+# this method returns all of the movies inside a user's watch list
+def getUserWatchList(discord_id):
+    client = getMongoClient()
+    db = client["MovieBot"]
+    users = db["Users"]
 
-#x = mycol.update_one(selection, newvalues)
-#print(x.modified_count, "documents updated.")
+    # get the document for the user as a Python dictionary
+    user_document = users.find_one({"discord_id": discord_id})
+    watch_list = user_document["watch_list"]
+    return watch_list
+

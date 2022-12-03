@@ -14,6 +14,3 @@ def frequencySort(s: str) -> str:
     for char, freq in sorted_freq:
         result += char * freq
     return result
-
-s = "ddddddaac"
-print(frequencySort(s))
