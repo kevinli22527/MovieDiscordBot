@@ -102,9 +102,31 @@ async def addMovie(ctx):  # ctx is the context of the command
 
 
 # command to remove a movie from a user's watch list, stored in MongoDB
-@bot.command(name='rm', help='Removes a movie from your watch list')
+@bot.command(name='removeMovie', help='Removes a movie from your watch list')
 async def removeMovie(ctx):
-    pass
+    user_id = str(ctx.author.id)  # get the user's discord id
+
+    user_discord_name = ctx.author.display_name  # get the user's discord name
+
+    full_command = ctx.message.content  # the raw text that triggered this command
+    ADD_MOVIE = re.compile(r'^\*removeMovie (.*)$', re.IGNORECASE)  # regex to get the movie name
+    match = re.match(ADD_MOVIE, full_command)  # match the regex to the full command
+    
+    # get the first group of the match
+    if match is None:
+        await ctx.send('Invalid movie to be added')
+        return
+    else:
+        # send the movie name to the discord channel
+        movie_name = match.group(1) # the first group of the match is the movie title
+
+        #check if movie exists in the database, and remove it if it does
+        if isInUserWatchList(user_id, movie_name):
+            removeFromUserWatchList(user_id, movie_name)  # remove the movie from the user's watch list
+            success_string = f'Successfully removed {movie_name} from {user_discord_name}\'s watch list'
+            await ctx.send(success_string)  # send the success message to the discord channel
+        else:
+            await ctx.send(f'{movie_name} is not in your watch list') # error message for the user
 
 
 # command to rate a movie after watching it, thus removing it from the user's watch list. The movie will be placed in the combined watched list
