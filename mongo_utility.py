@@ -99,3 +99,17 @@ def getUserWatchList(discord_id):
     watch_list = user_document["watch_list"]
     return watch_list
 
+# this method removes a movie from inside a user's watch list
+def removeFromUserWatchList(discord_id, movie_name):
+    client = getMongoClient()
+    db = client["MovieBot"]
+    users = db["Users"]
+
+    # get the document for the user as a Python dictionary
+    user_document = users.find_one({"discord_id": discord_id})
+    watch_list = user_document["watch_list"]
+    watch_list.remove(movie_name)
+
+    # this new document will replace the old document
+    users.replace_one({"discord_id": discord_id}, user_document)
+    return
