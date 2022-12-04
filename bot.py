@@ -147,7 +147,7 @@ async def rateMovie(ctx):
 # *whoseTurn
 @bot.command(name='whoseTurn', help='Displays whose turn it is to pick a movie')
 async def whoseTurn(ctx):
-    whose_turn = getWhoseTurn()
+    whose_turn = getWhoseTurn()["discord_name"]
     await ctx.send(f'It is {whose_turn}\'s turn to pick a movie')
 
 
@@ -189,7 +189,14 @@ async def list(ctx):
 # *yield
 @bot.command(name='yield', help='Yields your turn to pick a movie')
 async def yieldTurn(ctx):
-    pass
+    user_id = str(ctx.author.id)  # get the user's discord id
+
+    # ensure that non-turn people can't yield the turns of others
+    if getWhoseTurn()["discord_id"] == user_id:  # right person to yield the turn
+        yieldYourTurn(user_id)
+        await ctx.send(f'{ctx.author.display_name} has yielded their turn to pick a movie')
+    else: # wrong person to yield the turn
+        await ctx.send('It is not your turn to pick a movie') # error message for the user
 
 
 # command to display a user's movie stats, such as their watch list and the number of turns they have yielded
@@ -222,7 +229,7 @@ async def watched(ctx):
         # send the movie name to the discord channel
         movie_name = match.group(1) # the first group of the match is the movie title
 
-    # check if movie exists in user list, and move to watched list if it does, else add externally
+    # check if movie exists in user list, and move to watched list if it does, else add externally without consuming a turn (mutual agreement)
     if isInUserWatchList(user_id, movie_name):
         moveFromUserWatchListToWatched(user_id, movie_name)  # move the movie from the user's watch list to the watched list
         success_string = f'Successfully moved {movie_name} from {user_discord_name}\'s watch list to watched list'
@@ -231,11 +238,9 @@ async def watched(ctx):
         next_turn = getWhoseTurn()["display_name"]  # get the new person whose turn it is to pick a movie
         await ctx.send(f'It is now {next_turn}\'s turn to pick a movie')  # send the new person whose turn it is to pick a movie
     else:
-        addWatchedMovie(user_id, movie_name)  # add the movie to the watched list
+        # Movie is on neither watch list, but is mutually agreed upon, so add it to the watched list, without consuming a turn
+        addWatchedMovie(movie_name)  # add the movie to the watched list
         await ctx.send(f'{movie_name} has been added to the watched list') # the movie doesn't have to be in the watch list to be picked
-        updateWhoseTurn()
-        next_turn = getWhoseTurn()["display_name"]
-        await ctx.send(f'It is now {next_turn}\'s turn to pick a movie') 
 
 # command to display the watched list
 # *watchedList
