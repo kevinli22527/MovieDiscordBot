@@ -242,9 +242,4 @@ async def watchedList(ctx):
         # if the watched list is empty, send a message to the discord channel
         await ctx.send('No movies have been watched yet! Time to pick something good!') # error message for the user
 
-
-
-    
-
-
 bot.run(TOKEN)
