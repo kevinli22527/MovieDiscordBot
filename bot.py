@@ -199,10 +199,13 @@ async def stats(ctx):
 
 # command to move movie from watch list to watched list; this command also switches the turn to the next person
 # *watched <movieTitle>
-# TODO: flip turns when a movie is watched
 @bot.command(name='watched', help='Moves a movie from your watch list to your watched list')
 async def watched(ctx):
     user_id = str(ctx.author.id)  # get the user's discord id
+
+    if user_id != getWhoseTurn()['discord_id']:
+        await ctx.send('It is not your turn to pick a movie, dork')
+        return
 
     user_discord_name = ctx.author.display_name  # get the user's discord name
 
@@ -219,17 +222,20 @@ async def watched(ctx):
         # send the movie name to the discord channel
         movie_name = match.group(1) # the first group of the match is the movie title
 
-    # check if movie exists in user list, and move to watched list if it does
+    # check if movie exists in user list, and move to watched list if it does, else add externally
     if isInUserWatchList(user_id, movie_name):
         moveFromUserWatchListToWatched(user_id, movie_name)  # move the movie from the user's watch list to the watched list
         success_string = f'Successfully moved {movie_name} from {user_discord_name}\'s watch list to watched list'
         await ctx.send(success_string)  # send the success message to the discord channel
         updateWhoseTurn()  # update whose turn it is to pick a movie
-        whose_turn = getWhoseTurn()  # get the new person whose turn it is to pick a movie
-        await ctx.send(f'It is now {whose_turn}\'s turn to pick a movie')  # send the new person whose turn it is to pick a movie
+        next_turn = getWhoseTurn()["display_name"]  # get the new person whose turn it is to pick a movie
+        await ctx.send(f'It is now {next_turn}\'s turn to pick a movie')  # send the new person whose turn it is to pick a movie
     else:
         addWatchedMovie(user_id, movie_name)  # add the movie to the watched list
-        await ctx.send(f'{movie_name} has been added to the watched list') # error message for the user
+        await ctx.send(f'{movie_name} has been added to the watched list') # the movie doesn't have to be in the watch list to be picked
+        updateWhoseTurn()
+        next_turn = getWhoseTurn()["display_name"]
+        await ctx.send(f'It is now {next_turn}\'s turn to pick a movie') 
 
 # command to display the watched list
 # *watchedList
@@ -249,7 +255,7 @@ async def watchedList(ctx):
         response += str(num) + ") " + str(movie_name) + "\n"
         num += 1
 
-    if response != "Movies Watched:\n":
+    if len(watched_list) > 0:
         await ctx.send(response)  # send the watched list to the discord channel
     else:
         # if the watched list is empty, send a message to the discord channel
