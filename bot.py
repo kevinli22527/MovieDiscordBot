@@ -187,6 +187,7 @@ async def list(ctx):
 
 # command to yield a user's turn to pick a movie
 # *yield
+# Leaving the yield turn function as simply a counter for now
 @bot.command(name='yield', help='Yields your turn to pick a movie')
 async def yieldTurn(ctx):
     user_id = str(ctx.author.id)  # get the user's discord id
