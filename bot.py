@@ -196,7 +196,7 @@ async def yieldTurn(ctx):
 async def stats(ctx):
     pass
 
-# command to move movie from watch list to watched list
+# command to move movie from watch list to watched list; this command also switches the turn to the next person
 # *watched <movieTitle>
 # TODO: flip turns when a movie is watched
 @bot.command(name='watched', help='Moves a movie from your watch list to your watched list')
