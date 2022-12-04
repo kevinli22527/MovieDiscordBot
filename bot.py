@@ -256,4 +256,5 @@ async def watchedList(ctx):
         await ctx.send('No movies have been watched yet! Time to pick something good!') # error message for the user
 
 
+
 bot.run(TOKEN)
