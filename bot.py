@@ -8,7 +8,13 @@ from discord.ext import commands, tasks
 import random
 
 import pymongo
-from mongo_utility import *
+
+from mongo_initialization import *
+from mongo_ratings import *
+from mongo_users import *
+from mongo_turns import *
+from mongo_watch_lists import *
+
 from movie import *
 
 mongoclient = pymongo.MongoClient("mongodb+srv://KevinLi:Kevinpower1@ourcluster.eemanbw.mongodb.net/?retryWrites=true&w=majority")  # connects to the mongoDB database
@@ -114,11 +120,44 @@ async def removeMovie(ctx):
             await ctx.send(f'{movie_name} is not in your watch list') # error message for the user
 
 
-# command to rate a movie after watching it, thus removing it from the user's watch list. The movie will be placed in the combined watched list
-# *rate <movieTitle> <rating>
+# command to rate a movie after watching it. The movie must be in the collective watched list for ratings to take effect, otherwise an error message will be displayed. Ratings will implicitly be out of the 10 scale.
+# *rate <movieTitle> <rating out of 10>
 @bot.command(name='rate', help='Rates a movie after watching it')
 async def rateMovie(ctx):
-    pass
+    # get user id of who is rating
+    user_id = str(ctx.author.id)  # get the user's discord id
+    user_discord_name = ctx.author.display_name
+
+    full_command = ctx.message.content  # the raw text that triggered this command
+    RATE_MOVIE = re.compile(r'^\*rate (.*) (\d*)$', re.IGNORECASE)  # regex to get the movie name and the rating
+    match = re.match(RATE_MOVIE, full_command)  # match the regex to the full command
+
+    if match is None:
+        await ctx.send('Invalid command format. Should be "*rate <movieTitle> <rating out of 10>"')
+        return
+    else: # successfully matched
+        movie_name = match.group(1) # the first group of the match is the movie title
+        new_rating = float(match.group(2)) # the second group of the match is the rating
+
+        if not haveWatchedBefore(movie_name):  # check if movie has been watched before
+            await ctx.send(f"Y'all have not watched {movie_name} before")
+            return
+
+        if not isValidRating(new_rating):
+            await ctx.send(f"Rating must be between 0 and 10")
+            return
+
+        # get user's rating for the movie if it exists already
+        old_user_rating = getUserRating(user_id, movie_name)
+        # set the user's rating for the movie in the database
+        addUserRating(user_id, movie_name, new_rating)
+
+        if old_user_rating is None: # user has not rated before
+            await ctx.send(f"{user_discord_name} rated {movie_name} {new_rating}/10")
+        else:
+            await ctx.send(f"{user_discord_name} updated their rating for {movie_name} from {old_user_rating}/10 to {new_rating}/10")
+        
+    return
 
 
 # command to display whose turn it is to pick a movie
@@ -230,7 +269,7 @@ async def watchedList(ctx):
     user_discord_name = ctx.author.display_name  # get the user's discord name
 
     full_command = ctx.message.content  # the raw text that triggered this command
-    watched_list = displayWatchedMovies()  # get the watched list from the database
+    watched_list = getWatchedMovies()  # get the watched list from the database
 
     response = "Movies Watched:\n"
     num = 1
