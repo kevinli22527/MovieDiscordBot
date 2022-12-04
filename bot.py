@@ -190,5 +190,33 @@ async def yieldTurn(ctx):
 async def stats(ctx):
     pass
 
+# command to move movie from watch list to watched list
+@bot.command(name='watched', help='Moves a movie from your watch list to your watched list')
+async def watched(ctx):
+    user_id = str(ctx.author.id)  # get the user's discord id
+
+    user_discord_name = ctx.author.display_name  # get the user's discord name
+
+    full_command = ctx.message.content  # the raw text that triggered this command
+    WATCHED_MOVIE = re.compile(r'^\*watched (.*)$', re.IGNORECASE)  # regex to get the movie name
+
+    match = re.match(WATCHED_MOVIE, full_command)  # match the regex to the full command
+    
+    # get the first group of the match
+    if match is None:
+        await ctx.send('Invalid movie to be added')
+        return
+    else:
+        # send the movie name to the discord channel
+        movie_name = match.group(1) # the first group of the match is the movie title
+
+    # check if movie exists in user list, and move to watched list if it does
+    if isInUserWatchList(user_id, movie_name):
+        moveFromUserWatchListToWatched(user_id, movie_name)  # move the movie from the user's watch list to the watched list
+        success_string = f'Successfully moved {movie_name} from {user_discord_name}\'s watch list to watched list'
+        await ctx.send(success_string)  # send the success message to the discord channel
+    else:
+        await ctx.send(f'{movie_name} is not in your watch list. Please add it to your watch list before moving it to the watched list') # error message for the user
+
 
 bot.run(TOKEN)

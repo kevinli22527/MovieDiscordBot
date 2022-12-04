@@ -133,3 +133,27 @@ def removeFromUserWatchList(discord_id, movie_name):
     # this new document will replace the old document
     users.replace_one({"discord_id": discord_id}, user_document)
     return
+
+# this method moves a movie from a user's watch list to the collective watched list
+def moveFromUserWatchListToWatched(discord_id, movie_name):
+    client = getMongoClient()
+    db = client["MovieBot"]
+    users = db["Users"]
+    watched_movies = db["WatchedMovies"]
+
+    # get the document for the user as a Python dictionary
+    user_document = users.find_one({"discord_id": discord_id})
+    watch_list = user_document["watch_list"]
+    watch_list.remove(movie_name)
+
+    # this new document will replace the old document
+    users.replace_one({"discord_id": discord_id}, user_document)
+
+    # get the document for the watched movies as a Python dictionary
+    watched_movies_document = watched_movies.find_one({})
+    movie_info = {"nameOfMovie": movie_name, "userRatings": []}
+    watched_movies_document["watched_list"].append(movie_info)
+
+    # this new document will replace the old document
+    watched_movies.replace_one({}, watched_movies_document)
+    return
