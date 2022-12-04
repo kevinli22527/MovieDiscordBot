@@ -168,3 +168,42 @@ def displayWatchedMovies():
     watched_movies_document = watched_movies.find_one({})
     watched_list = watched_movies_document["watched_list"]
     return watched_list
+
+# this method determines which user is next in the round robin selection, returns the INDEX of the next user
+def getWhoseTurn():
+    client = getMongoClient()
+    db = client["MovieBot"]
+    logistics = db["Logistics"]
+    users = db["Users"]
+
+    # get the document for the logistics as a Python dictionary
+    logistics_document = logistics.find_one({})
+    whose_turn = logistics_document["whose_turn"]
+    user_ids = logistics_document["users"]
+    # get discord id of the user whose turn it is
+    user_id = user_ids[whose_turn]
+    # get the user discord name
+    user_document = users.find_one({"discord_id": user_id})
+    return user_document["display_name"]
+
+# this method updates the round robin selection
+def updateWhoseTurn():
+    client = getMongoClient()
+    db = client["MovieBot"]
+    logistics = db["Logistics"]
+    users = db["Users"]
+
+    # get the document for the logistics as a Python dictionary
+    logistics_document = logistics.find_one({})
+    whose_turn = logistics_document["whose_turn"]
+    user_IDs = logistics_document["users"]
+
+    # update the round robin selection
+    if whose_turn == len(user_IDs) - 1:
+        logistics_document["whose_turn"] = 0
+    else:
+        logistics_document["whose_turn"] = whose_turn + 1
+    
+    # this new document will replace the old document
+    logistics.replace_one({}, logistics_document)
+    return
