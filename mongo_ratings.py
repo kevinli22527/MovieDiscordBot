@@ -10,10 +10,10 @@ def getUserRating(discord_id, movie_name):
     # get the document for the watched movies as a Python dictionary
     watched_movies_document = watched_movies.find_one({})
     watched_list = watched_movies_document["watched_list"]
-    for movie_info in watched_list:
+    for movie_info in watched_list: # lock the movie name
         if movie_info["nameOfMovie"] == movie_name:
             user_ratings = movie_info["userRatings"]
-            for user_rating in user_ratings:
+            for user_rating in user_ratings:  # lock the user rating if it exists
                 if user_rating["discord_id"] == discord_id:
                     return user_rating["rating"]
     return None
