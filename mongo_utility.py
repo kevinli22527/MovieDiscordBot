@@ -76,7 +76,7 @@ def initialize_test_database():
 
     # set up and add logistics document
     logistics = db["Logistics"]
-    logistics_document = {"whose_turn": 0, "users": user_ids}
+    logistics_document = {"whose_turn": 0, "users": user_ids, "num_users": len(user_ids)}
     logistics.insert_one(logistics_document) # add the document to the collection
     return
 
