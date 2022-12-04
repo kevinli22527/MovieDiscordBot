@@ -102,7 +102,7 @@ async def removeMovie(ctx):
     
     # get the first group of the match
     if match is None:
-        await ctx.send('Invalid movie to be added')
+        await ctx.send('Invalid movie to be removed')
         return
     else:
         # send the movie name to the discord channel
