@@ -147,7 +147,8 @@ async def rateMovie(ctx):
 # *whoseTurn
 @bot.command(name='whoseTurn', help='Displays whose turn it is to pick a movie')
 async def whoseTurn(ctx):
-    pass
+    whose_turn = getWhoseTurn()
+    await ctx.send(f'It is {whose_turn}\'s turn to pick a movie')
 
 
 # command to get a random movie from the watchlist of the person whose turn it is to pick a movie
@@ -223,6 +224,9 @@ async def watched(ctx):
         moveFromUserWatchListToWatched(user_id, movie_name)  # move the movie from the user's watch list to the watched list
         success_string = f'Successfully moved {movie_name} from {user_discord_name}\'s watch list to watched list'
         await ctx.send(success_string)  # send the success message to the discord channel
+        updateWhoseTurn()  # update whose turn it is to pick a movie
+        whose_turn = getWhoseTurn()  # get the new person whose turn it is to pick a movie
+        await ctx.send(f'It is now {whose_turn}\'s turn to pick a movie')  # send the new person whose turn it is to pick a movie
     else:
         addWatchedMovie(user_id, movie_name)  # add the movie to the watched list
         await ctx.send(f'{movie_name} has been added to the watched list') # error message for the user
