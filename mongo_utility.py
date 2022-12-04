@@ -157,3 +157,14 @@ def moveFromUserWatchListToWatched(discord_id, movie_name):
     # this new document will replace the old document
     watched_movies.replace_one({}, watched_movies_document)
     return
+
+# this method returns the collective watched list, as a list of dictionaries
+def displayWatchedMovies():
+    client = getMongoClient()
+    db = client["MovieBot"]
+    watched_movies = db["WatchedMovies"]
+
+    # get the document for the watched movies as a Python dictionary
+    watched_movies_document = watched_movies.find_one({})
+    watched_list = watched_movies_document["watched_list"]
+    return watched_list

@@ -216,7 +216,35 @@ async def watched(ctx):
         success_string = f'Successfully moved {movie_name} from {user_discord_name}\'s watch list to watched list'
         await ctx.send(success_string)  # send the success message to the discord channel
     else:
-        await ctx.send(f'{movie_name} is not in your watch list. Please add it to your watch list before moving it to the watched list') # error message for the user
+        addWatchedMovie(user_id, movie_name)  # add the movie to the watched list
+        await ctx.send(f'{movie_name} has been added to the watched list') # error message for the user
+
+# command to display the watched list
+@bot.command(name='watchedList', help='Displays the watched list')
+async def watchedList(ctx):
+    user_id = str(ctx.author.id)  # get the user's discord id
+
+    user_discord_name = ctx.author.display_name  # get the user's discord name
+
+    full_command = ctx.message.content  # the raw text that triggered this command
+    watched_list = displayWatchedMovies()  # get the watched list from the database
+
+    response = "Movies Watched:\n"
+    num = 1
+    for movie_data in watched_list:
+        movie_name = movie_data['nameOfMovie']
+        response += str(num) + ") " + str(movie_name) + "\n"
+        num += 1
+
+    if response != "Movies Watched:\n":
+        await ctx.send(response)  # send the watched list to the discord channel
+    else:
+        # if the watched list is empty, send a message to the discord channel
+        await ctx.send('No movies have been watched yet! Time to pick something good!') # error message for the user
+
+
+
+    
 
 
 bot.run(TOKEN)
