@@ -108,6 +108,7 @@ async def addMovie(ctx):  # ctx is the context of the command
 
 
 # command to remove a movie from a user's watch list, stored in MongoDB
+# *removeMovie <movieTitle>
 @bot.command(name='removeMovie', help='Removes a movie from your watch list')
 async def removeMovie(ctx):
     user_id = str(ctx.author.id)  # get the user's discord id
@@ -136,24 +137,28 @@ async def removeMovie(ctx):
 
 
 # command to rate a movie after watching it, thus removing it from the user's watch list. The movie will be placed in the combined watched list
+# *rate <movieTitle> <rating>
 @bot.command(name='rate', help='Rates a movie after watching it')
 async def rateMovie(ctx):
     pass
 
 
 # command to display whose turn it is to pick a movie
+# *whoseTurn
 @bot.command(name='whoseTurn', help='Displays whose turn it is to pick a movie')
 async def whoseTurn(ctx):
     pass
 
 
 # command to get a random movie from the watchlist of the person whose turn it is to pick a movie
+# *pick
 @bot.command(name='pick', help='Picks a random movie from the watchlist of the person whose turn it is to pick a movie')
 async def pickMovie(ctx):
     pass
 
 
 # command to display a user's watch list
+# *watchList
 @bot.command(name='list', help='Displays your watch list')
 async def list(ctx):
     user_id = str(ctx.author.id)  # get the user's discord id
@@ -180,6 +185,7 @@ async def list(ctx):
 
 
 # command to yield a user's turn to pick a movie
+# *yield
 @bot.command(name='yield', help='Yields your turn to pick a movie')
 async def yieldTurn(ctx):
     pass
@@ -191,6 +197,7 @@ async def stats(ctx):
     pass
 
 # command to move movie from watch list to watched list
+# *watched <movieTitle>
 @bot.command(name='watched', help='Moves a movie from your watch list to your watched list')
 async def watched(ctx):
     user_id = str(ctx.author.id)  # get the user's discord id
@@ -204,7 +211,7 @@ async def watched(ctx):
     
     # get the first group of the match
     if match is None:
-        await ctx.send('Invalid movie to be added')
+        await ctx.send('No movie to be moved')
         return
     else:
         # send the movie name to the discord channel
@@ -220,6 +227,7 @@ async def watched(ctx):
         await ctx.send(f'{movie_name} has been added to the watched list') # error message for the user
 
 # command to display the watched list
+# *watchedList
 @bot.command(name='watchedList', help='Displays the watched list')
 async def watchedList(ctx):
     user_id = str(ctx.author.id)  # get the user's discord id
@@ -241,10 +249,6 @@ async def watchedList(ctx):
     else:
         # if the watched list is empty, send a message to the discord channel
         await ctx.send('No movies have been watched yet! Time to pick something good!') # error message for the user
-
-
-
-    
 
 
 bot.run(TOKEN)
