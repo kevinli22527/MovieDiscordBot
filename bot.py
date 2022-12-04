@@ -204,7 +204,7 @@ async def watched(ctx):
     user_id = str(ctx.author.id)  # get the user's discord id
 
     if user_id != getWhoseTurn()['discord_id']:
-        await ctx.send('It is not your turn to pick a movie, dork')
+        await ctx.send(f'It is not your turn to pick a movie, {ctx.author.display_name}')
         return
 
     user_discord_name = ctx.author.display_name  # get the user's discord name
