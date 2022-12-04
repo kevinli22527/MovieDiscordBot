@@ -198,6 +198,7 @@ async def stats(ctx):
 
 # command to move movie from watch list to watched list
 # *watched <movieTitle>
+# TODO: flip turns when a movie is watched
 @bot.command(name='watched', help='Moves a movie from your watch list to your watched list')
 async def watched(ctx):
     user_id = str(ctx.author.id)  # get the user's discord id
