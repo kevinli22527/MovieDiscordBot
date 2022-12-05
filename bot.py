@@ -169,8 +169,19 @@ async def whoseTurn(ctx):
 # *pick
 @bot.command(name='pick', help='Picks a random movie from the watchlist of the person whose turn it is to pick a movie')
 async def pickMovie(ctx):
-    pass
 
+    whose_turn = getWhoseTurn()
+
+    turn_user_id = whose_turn["discord_id"]
+    turn_user_discord_name = whose_turn["discord_name"]
+    turn_user_watch_list = whose_turn["watch_list"]
+
+    if len(turn_user_watch_list) == 0:
+        await ctx.send(f'{turn_user_discord_name} has no movies in their watch list')
+        return
+    else:
+        random_pick = random.choice(turn_user_watch_list)
+        await ctx.send(f'Random next pick for {turn_user_discord_name} is {random_pick}')
 
 # command to display a user's watch list
 # *watchList
@@ -217,7 +228,10 @@ async def yieldTurn(ctx):
 # command to display a user's movie stats, such as their watch list and the number of turns they have yielded
 @bot.command(name='stats', help='Displays the stats of a user')
 async def stats(ctx):
-    pass
+    user_id = str(ctx.author.id)  # get the user's discord id
+    user_info = get_user_info(user_id)  # user info contains a dictionary of the user's info
+    comma_separated_watch_list = ", ".join(user_info["watch_list"])  # convert the user's watch list to a comma separated string
+    await ctx.send(f'{ctx.author.display_name}\'s stats:\nWatch list: {comma_separated_watch_list}\nTurns Yielded: {user_info["turns_yielded"]}')
 
 # command to move movie from watch list to watched list; this command also switches the turn to the next person
 # *watched <movieTitle>

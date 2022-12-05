@@ -19,3 +19,12 @@ def get_all_users():
     user_info = list(users.find({}))  # this queries the database for all users
     # print type of user info
     return user_info
+
+
+# this method gets all of the user info for a specific user identified by the user id. The return type is a dictionary containing the user's info
+def get_user_info(discord_id):
+    client = getMongoClient()
+    db = client["MovieBot"]
+    users = db["Users"]
+    user_info = users.find_one({"discord_id": discord_id})
+    return user_info

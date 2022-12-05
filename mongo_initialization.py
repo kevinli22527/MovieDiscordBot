@@ -1,5 +1,5 @@
 from mongo_utility import *
-
+from mongo_users import *
 
 # initializes all users in the database manually. Currently, this is for putting Megan and Kevin information into the Users collection
 def initialize_users():
