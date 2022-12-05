@@ -117,6 +117,29 @@ async def removeMovie(ctx):
             await ctx.send(f'{movie_name} is not in your watch list') # error message for the user
 
 
+# command to remove all movies from a user's watch list, stored in MongoDB
+# *clear
+@bot.command(name='clear', help='Clears your watch list')
+async def clear_watch_list(ctx):
+    user_id = str(ctx.author.id)  # get the user's discord id
+
+    user_discord_name = ctx.author.display_name  # get the user's discord name
+
+    full_command = ctx.message.content  # the raw text that triggered this command
+    REMOVE_MOVIE = re.compile(r'^\*clear$', re.IGNORECASE)  # regex to match the clear command
+    match = re.match(REMOVE_MOVIE, full_command)  # match the regex to the full command
+    
+    # get the first group of the match
+    if match is None:
+        await ctx.send('Syntax for clear is "*clear"')
+        return
+    else:
+        # clear the user's watch list
+        clear_watch_list(user_id)
+        success_string = f'Successfully cleared {user_discord_name}\'s watch list'
+        await ctx.send(success_string)  # send the success message to the discord channel
+
+
 # command to rate a movie after watching it. The movie must be in the collective watched list for ratings to take effect, otherwise an error message will be displayed. Ratings will implicitly be out of the 10 scale.
 # *rate <movieTitle> <rating out of 10>
 @bot.command(name='rate', help='Rates a movie after watching it')

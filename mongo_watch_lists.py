@@ -122,3 +122,18 @@ def haveWatchedBefore(movie_name):
         if movie["nameOfMovie"].lower() == movie_name.lower():
             return True
     return False
+
+
+# this method clears the watch list of a the user referenced by the user id
+def clear_watch_list(discord_id):
+    client = getMongoClient()
+    db = client["MovieBot"]
+    users = db["Users"]
+
+    # get the document for the user as a Python dictionary
+    user_document = users.find_one({"discord_id": discord_id})
+    user_document["watch_list"] = []
+
+    # this new document will replace the old document
+    users.replace_one({"discord_id": discord_id}, user_document)
+    return
