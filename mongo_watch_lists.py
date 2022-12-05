@@ -44,6 +44,21 @@ def isInUserWatchList(discord_id, movie_name):
     return movie_name.lower() in [movie.lower() for movie in watch_list]
 
 
+# this method returns whether a movie name is inside any user's watch list
+def isInAnyWatchList(movie_name):
+    client = getMongoClient()
+    db = client["MovieBot"]
+    users = db["Users"]
+
+    # get the document for the user as a Python dictionary
+    user_documents = users.find({})
+    for user_document in user_documents:
+        watch_list = user_document["watch_list"]
+        if movie_name.lower() in [movie.lower() for movie in watch_list]:
+            return True
+    return False
+
+
 # this method returns all of the movies inside a user's watch list
 def getUserWatchList(discord_id):
     client = getMongoClient()

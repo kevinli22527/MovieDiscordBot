@@ -82,10 +82,14 @@ async def addMovie(ctx):  # ctx is the context of the command
         if isInUserWatchList(user_id, movie_name):
             await ctx.send(f'{movie_name} is already in your watch list') # error message for the user
             return
-        else:
-            addToWatchList(user_id, movie_name)  # add the movie to the user's watch list
-            success_string = f'Successfully added {movie_name} to {user_discord_name}\'s watch list'
-            await ctx.send(success_string)  # send the success message to the discord channel
+
+        if isInAnyWatchList(movie_name):
+            await ctx.send(f'{movie_name} is already in someone\'s watch list')
+            return
+        
+        addToWatchList(user_id, movie_name)  # add the movie to the user's watch list
+        success_string = f'Successfully added {movie_name} to {user_discord_name}\'s watch list'
+        await ctx.send(success_string)  # send the success message to the discord channel
 
 
 # command to remove a movie from a user's watch list, stored in MongoDB
