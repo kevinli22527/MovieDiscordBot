@@ -318,6 +318,65 @@ async def watchedList(ctx):
         # if the watched list is empty, send a message to the discord channel
         await ctx.send('No movies have been watched yet! Time to pick something good!') # error message for the user
 
+# command to search for movies by genre
+# *genre <genre>
+@bot.command(name='genre', help='Searches for movies by genre. Valid genres are:\n Action, Adventure, Animation, Comedy, Crime, Documentary, Drama, Family, Fantasy, History, Horror, Music, Mystery, Romance, Science Fiction, TV Movie, Thriller, War, Western')
+async def genre(ctx):
+    user_id = str(ctx.author.id)
+    GENRE = re.compile(r'^\*genre (.*)$', re.IGNORECASE)
+    full_command = ctx.message.content
+    match = re.match(GENRE, full_command)
+    if match is None:
+        await ctx.send('No genre specified')
+        return
+    else:
+        genre = match.group(1)
+
+        if genre not in [entry.lower() for entry in GENRE_TO_ID.keys()]:
+            await ctx.send('Invalid genre. See documentation for valid genres')
+            return
+
+        movie_list = searchMoviesByGenre(genre)
+        if len(movie_list) == 0:
+            await ctx.send('No movies found')
+            return
+        else:
+            response = "Movies Found:\n"
+            num = 1
+            for movie in movie_list:
+                response += str(num) + ") " + str(movie) + "\n"
+                num += 1
+            await ctx.send(response)
+            return
+
+# command to search for related movies using a movie title
+# *related <movieTitle>
+@bot.command(name='related', help='Searches for movies related to a movie title')
+async def related(ctx):
+    user_id = str(ctx.author.id)
+    RELATED = re.compile(r'^\*related (.*)$', re.IGNORECASE)
+    full_command = ctx.message.content
+    match = re.match(RELATED, full_command)
+    if match is None:
+        await ctx.send('No movie title specified')
+        return
+    else:
+        movie_title = match.group(1)
+
+        movie_list = get_recommendations(movie_title)
+        if len(movie_list) == 0:
+            await ctx.send('Movie name is probably invalid')
+            return
+        else:
+            response = "Movies Found:\n"
+            num = 1
+            for movie in movie_list:
+                response += str(num) + ") " + str(movie) + "\n"
+                num += 1
+            await ctx.send(response)
+            return
+
+
 # error handler if invalid command is typed
 @bot.event
 async def on_command_error(ctx, error):

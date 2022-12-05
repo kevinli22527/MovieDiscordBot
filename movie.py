@@ -57,18 +57,15 @@ def get_recommendations(movie_title):
     #get id of movie
     search_results = movie.search(movie_title)
     if (len(search_results) == 0):
-        # raise exception
-        raise Exception("Movie not found")
+        return None
     else:
         movie_id = search_results[0].id
     #get recommendations
     recommendations = movie.recommendations(movie_id)
+    result_list = []
     for recommendation in recommendations:
-        print(recommendation.title)
-        print(recommendation.id)
-        print(recommendation.overview)
-        print(recommendation.genres)
-        print()
+        result_list.append(recommendation.title)
+    return result_list
 
 
 # this method determines whether a movie actually exists in the TMDB database or not
@@ -106,4 +103,4 @@ def searchMoviesByGenre(genre_name):
     return result_list
 
 
-print(searchMoviesByGenre("action"))
+print(get_recommendations("Jurassic Park"))
