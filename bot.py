@@ -295,6 +295,15 @@ async def watchedList(ctx):
         # if the watched list is empty, send a message to the discord channel
         await ctx.send('No movies have been watched yet! Time to pick something good!') # error message for the user
 
-
+# error message if invalid command is typed
+@bot.event
+async def on_command_error(ctx, error):
+  if isinstance(error, commands.CommandNotFound):
+    # Invalid command was typed
+    await ctx.send("Not a Valid Command. Please try again. For assistance, type *help")
+  if isinstance(error, commands.MissingRequiredArgument):
+    # shouldn't be possible to get here, but just in case
+    # In case user doesn't input enough arguments
+    await ctx.send("Missing required argument. Please try again. For assistance, type *help")
 
 bot.run(TOKEN)
