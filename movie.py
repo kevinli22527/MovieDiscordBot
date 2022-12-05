@@ -101,6 +101,3 @@ def searchMoviesByGenre(genre_name):
     for result in search_results:
         result_list.append(result.title)
     return result_list
-
-
-print(get_recommendations("Jurassic Park"))

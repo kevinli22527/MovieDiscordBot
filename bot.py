@@ -124,7 +124,7 @@ async def removeMovie(ctx):
 # command to remove all movies from a user's watch list, stored in MongoDB
 # *clear
 @bot.command(name='clear', help='Clears your watch list')
-async def clear_watch_list(ctx):
+async def clear(ctx):
     user_id = str(ctx.author.id)  # get the user's discord id
 
     user_discord_name = ctx.author.display_name  # get the user's discord name
