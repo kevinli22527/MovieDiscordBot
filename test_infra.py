@@ -10,19 +10,19 @@ from mongo_watch_lists import *
 def setup():
     initialize_test_database()
 
-def test_1():
+def test_isInUserWatchList1():
     assert isInUserWatchList("656333371827421225", "Ella Enchanted")
 
-def test_2():
+def test_isInUserWatchList2():
     assert isInUserWatchList("656333371827421225", "Jurassic Park")
 
-def test_3():
+def test_isInUserWatchList3():
     assert isInUserWatchList("279423302408339456", "Mad Max")
 
-def test_4():
+def test_isInUserWatchList4():
     assert isInUserWatchList("279423302408339456", "Transformers")
 
-def test_5():
+def test_remove_from_watchlist():
     initialize_test_database()
     removeFromUserWatchList("656333371827421225", "Jurassic Park")
     assert not isInUserWatchList("656333371827421225", "Jurassic Park")
@@ -30,7 +30,7 @@ def test_5():
     assert not isInUserWatchList("279423302408339456", "Mad Max")
 
 # for testing the clear watch list function
-def test_6():
+def test_clear_watchlist():
     initialize_test_database()
     assert len(getUserWatchList("656333371827421225")) == 3
     assert len(getUserWatchList("279423302408339456")) == 2
