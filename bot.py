@@ -381,6 +381,34 @@ async def related(ctx):
             return
 
 
+# command to get the rating for a movie in the watched list
+# *rating <movieTitle>
+@bot.command(name='rating', help='Gets the ratings for a movie in the watched list')
+async def rating(ctx):
+    user_id = str(ctx.author.id)
+    RATING = re.compile(r'^\*rating (.*)$', re.IGNORECASE)
+    full_command = ctx.message.content
+    match = re.match(RATING, full_command)
+    if match is None:
+        await ctx.send('No movie title specified')
+        return
+    else:
+        movie_title = match.group(1)
+
+        movie_rating = getMovieRatings(movie_title)
+        if movie_rating is None:
+            await ctx.send('Movie name is not in watched list')
+            return
+        else:
+            ratings = []
+            for rating in movie_rating:
+                ratings.append(rating['rating'])
+            average_rating = sum(ratings) / len(ratings)
+            response = f"Average rating for {movie_title}: {average_rating}"
+            await ctx.send(response)
+            return
+
+
 # error handler if invalid command is typed
 @bot.event
 async def on_command_error(ctx, error):

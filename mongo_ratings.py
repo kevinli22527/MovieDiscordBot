@@ -55,3 +55,18 @@ def isValidRating(rating):
         return True
     except ValueError:
         return False
+
+
+# gets the ratings for a movie in the watched list as a list
+def getMovieRatings(movie_name):
+    client = getMongoClient()
+    db = client["MovieBot"]
+    watched_movies = db["WatchedMovies"]
+
+    # get the document for the watched movies as a Python dictionary
+    watched_movies_document = watched_movies.find_one({})
+    watched_list = watched_movies_document["watched_list"]
+    for movie_info in watched_list:
+        if movie_info["nameOfMovie"].lower() == movie_name.lower():
+            return movie_info["userRatings"]
+    return None
